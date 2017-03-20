@@ -105,9 +105,7 @@ var rawData = [
 const sortByDate = (a, b) =>
 		 new Date(b.time) - new Date(a.time);
 
-console.log(rawData);
-	
-
+const sortedData = rawData.sort(sortByDate);
 
 //2. divide by weeks
 
