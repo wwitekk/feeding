@@ -39,8 +39,8 @@ const items = (state = [], action) => {
                 {
                     id: action.id,
                     qty: action.qty,
-                    time: acton.time,
-                    type: acton.type
+                    time: action.time,
+                    type: action.type
                 }
             ]
         default:

@@ -4,6 +4,7 @@ import App from './App';
 import './index.css';
 import Provider from 'react-redux';
 import CreateStore from 'redux';
+import items from './Reducers/foodItems'
 
 
 var rawData = [
@@ -101,6 +102,12 @@ var rawData = [
 
 
 //1. sort by time
+const sortByDate = (a, b) =>
+		 new Date(b.time) - new Date(a.time);
+
+console.log(rawData);
+	
+
 
 //2. divide by weeks
 
@@ -110,7 +117,7 @@ var rawData = [
 
 
 
-let store = CreateStore(foodApp)
+let store = CreateStore(items)
 
 ReactDOM.render(
   <Provider store={store}>
