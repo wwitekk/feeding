@@ -142,11 +142,12 @@ const groupByDate = (items, result) => {
 const daysRaw = groupByDate(resultItems);
 
 const daysWithTotals = day => {
-  return{
+  return {
     ...day,
     //TODO: refactor
-    subtotalType1: day.items.filter(item=>item.type === 0).reduce(countSum, 0),
-    subtotalType2: day.items.filter(item=>item.type === 1).reduce(countSum, 0)
+    subtotalType1: day.items.filter(item => item.type === 0).reduce(countSum, 0),
+    subtotalType2: day.items.filter(item => item.type === 1).reduce(countSum, 0),
+    total: day.items.reduce(countSum, 0)
   }
 }
 
