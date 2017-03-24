@@ -7,7 +7,7 @@ import CreateStore from 'redux';
 import items from './Reducers/foodItems'
 
 
-var rawData = [
+const rawData = [
   {
     "id": 1,
     "qty": 68,
@@ -23,14 +23,14 @@ var rawData = [
   {
     "id": 3,
     "qty": 119,
-    "time": "2017-07-01 17:42:50",
+    "time": "2017-10-16 17:42:50",
     "type": 0
   },
   {
     "id": 4,
     "qty": 65,
-    "time": "2017-06-09 12:47:40",
-    "type": 0
+    "time": "2017-10-16 12:47:40",
+    "type": 1
   },
   {
     "id": 5,
@@ -101,15 +101,66 @@ var rawData = [
 ];
 
 
-//1. sort by time
+//1. create days helpers
 const sortByDate = (a, b) =>
-		 new Date(b.time) - new Date(a.time);
+  new Date(b.time) - new Date(a.time);
+const exctractDate = (item) => {
+  const date = new Date(item.time);
+  return {
+    ...item,
+    day: date.getDate(),
+    week: Math.ceil(new Date(item.time).getDate() / 7), //TODO: redo - mon-fri
+    month: date.getMonth(),
+    year: date.getFullYear(),
+    dateString: `${date.getFullYear()}${date.getMonth()}${date.getDate()}`
+  }
+};
+const countSum = (prev, next) => (prev.qty || prev) + next.qty;
 
-const sortedData = rawData.sort(sortByDate);
+const resultItems = rawData
+  .sort(sortByDate)
+  .map(exctractDate);
+
+const groupByDate = (items, result) => {
+  const sortedItems = items.sort(sortByDate),
+    date = sortedItems[0].dateString,
+    group = sortedItems.filter(function (item) {
+      return item.dateString === date;
+    });
+  result = result || [];
+  result.push({ "date": date, "items": group });
+  const remainingItems = sortedItems.slice(group.length);
+
+  if (remainingItems.length > 0) {
+    return groupByDate(remainingItems, result);
+  }
+  else {
+    return result;
+  }
+}
+
+const daysRaw = groupByDate(resultItems);
+
+const daysWithTotals = day => {
+  return{
+    ...day,
+    //TODO: refactor
+    subtotalType1: day.items.filter(item=>item.type === 0).reduce(countSum, 0),
+    subtotalType2: day.items.filter(item=>item.type === 1).reduce(countSum, 0)
+  }
+}
+
+const days = daysRaw
+  .map(daysWithTotals);
+
+console.log('days', days)
+
+
+
 
 //2. divide by weeks
 
-//3. calculate total
+//3. calculate totals
 
 
 
