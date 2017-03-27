@@ -1,18 +1,9 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-
 import logo from './logo.svg';
 import './App.css';
-import { fetchItemsIfNeeded } from './Actions';
+import DayListContainer from './Components/days/dayListContainer';
 
 class App extends Component {
-
-  componentDidMount() {
-    const { dispatch } = this.props;
-
-    dispatch(fetchItemsIfNeeded());
-  }
-
 
   render() {
 
@@ -23,14 +14,11 @@ class App extends Component {
           <h2>Welcome to React</h2>
         </div>
 
+        <DayListContainer />
+
       </div>
     );
   }
 }
 
-function mapStateToProps(state) {
-  console.log('state', state)
-  return state;
-}
-
-export default connect(mapStateToProps)(App);
+export default App;
