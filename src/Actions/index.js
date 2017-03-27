@@ -1,27 +1,46 @@
 import fetch from 'isomorphic-fetch'
 
-export const ADD_ITEM = 'ADD_ITEM';
-const addItem = (item) => {
+export const REQUEST_ITEMS = 'REQUEST_ITEMS'
+export const RECEIVE_ITEMS = 'RECEIVE_ITEMS'
+
+function requestItems() {
     return {
-        type: ADD_ITEM,
-        item
+        type: REQUEST_ITEMS
     }
 }
 
-export const FETCH_ITEMS = 'FETCH_ITEMS';
-const receiveItems = (json) => {
+function receiveItems(json) {
     return {
-        type: FETCH_ITEMS,
+        type: RECEIVE_ITEMS,
         items: json,
         receivedAt: Date.now()
     }
 }
 
-const restUrl = 'http://localhost:3001/items';
-function fetchItems() {
-    return (dispatch) => {
-        return fetch(restUrl)
+function fetchPosts() {
+    return dispatch => {
+        dispatch(requestItems())
+        return fetch('http://localhost:3001/items')
             .then(response => response.json())
             .then(json => dispatch(receiveItems(json)))
+    }
+}
+
+function shouldFetchItems(state) {
+    const items = state.items
+    if (!!items) {
+        return true
+    } else if (items.isFetching) {
+        return false
+    } else {
+        return items.didInvalidate
+    }
+}
+
+export function fetchItemsIfNeeded() {
+    return (dispatch, getState) => {
+        if (shouldFetchItems(getState())) {
+            return dispatch(fetchPosts())
+        }
     }
 }
